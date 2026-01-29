@@ -1,0 +1,590 @@
+<!--
+★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★
+☆                                                          ☆
+★                版权所有：杰文工作室（Jewen Studio）      ★
+☆                Design: Jewen   QQ:86852984               ☆
+☆              现授权给：福建省长汀县爱乐英语单词使用      ☆
+★                  本站网址：https://alyy.ct.ws            ★
+☆                设计者网站：https://jewen.ct.ws           ☆
+☆                  制作时间： 2026年1月1号                 ☆
+★                                                          ★
+☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆
+-->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title> 爱乐英语-杰文工作室-单词趣味消消乐7Unit1 http://alyy.ct.ws</title>
+<style>
+    :root {
+        --main-bg: #F0FFF4; /* 浅绿色主背景 */
+        --container-bg: #FFFFFF;
+        --accent: #66BB6A; /* 主绿色强调色 */
+        --text: #2E7D32; /* 深绿色文字 */
+        --active-btn: #388E3C; /* 按钮选中深色 */
+        --card-selected: #E8F5E9; /* 卡片选中背景 */
+    }
+
+  * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+            /* 1. 禁用文本选择 */
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            /* 禁用拖拽 */
+            -webkit-user-drag: none;
+            -khtml-user-drag: none;
+            -moz-user-drag: none;
+            -o-user-drag: none;
+            user-drag: none;
+        }
+
+    body {
+        background: var(--main-bg);
+        margin: 0;
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-family: 微软雅黑, sans-serif;
+    }
+
+    .game-container {
+        background: var(--container-bg);
+        border-radius: 30px;
+        padding: 30px;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        border: 3px solid var(--accent);
+        width: 90%;
+        max-width: 1200px;
+    }
+
+    .header {
+        text-align: center;
+        margin-bottom: 25px;
+    }
+
+    .title {
+        font-size: 3.2em;
+        color: var(--text);
+        margin: 0 0 20px 0;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .controls {
+        display: flex;
+        gap: 20px;
+        justify-content: center;
+        margin-bottom: 25px;
+    }
+
+    .difficulty-btn {
+        font-size: 1.2em;
+        padding: 12px 30px;
+        border-radius: 25px;
+        background: var(--accent);
+        color: white;
+        border: none;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .difficulty-btn.active {
+        background: var(--active-btn);
+        transform: scale(1.05);
+    }
+
+    #timer {
+        text-align: center;
+        font-size: 2em;
+        color: var(--text);
+        margin: 15px 0;
+    }
+
+    #score {
+        text-align: center;
+        font-size: 1.5em;
+        color: var(--text);
+        margin: 15px 0;
+    }
+
+    .game-columns {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 30px;
+        margin: 20px 0;
+    }
+
+    .column {
+        background: #E8F5E9; /* 浅绿色列背景 */
+        border-radius: 20px;
+        padding: 20px;
+        min-height: 300px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px;
+        justify-content: center;
+        align-content: flex-start;
+    }
+
+    .card {
+        font-size: 1.8em;
+        color: var(--text);
+        background: white;
+        border-radius: 20px;
+        padding: 18px 35px;
+        cursor: pointer;
+        transition: all 0.2s;
+        box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+        user-select: none;
+        animation: cardAppear 0.3s ease-out;
+    }
+
+    @keyframes cardAppear {
+        0% { transform: scale(0); }
+        100% { transform: scale(1); }
+    }
+
+    .card.selected {
+        transform: scale(0.95);
+        background: var(--card-selected);
+        box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    }
+
+    .card.matched {
+        animation: popOut 0.4s forwards;
+    }
+
+    @keyframes popOut {
+        0% { transform: scale(1); opacity: 1 }
+        100% { transform: scale(0); opacity: 0 }
+    }
+
+    .victory-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.3);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+    }
+
+    .victory-card {
+        background: white;
+        padding: 40px 60px;
+        border-radius: 20px;
+        text-align: center;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        animation: scaleIn 0.3s ease-out;
+        border: 2px solid var(--accent);
+    }
+
+    .victory-card button {
+        font-size: 1.1em;
+        padding: 10px 25px;
+        border-radius: 20px;
+        background: var(--accent);
+        color: white;
+        border: none;
+        cursor: pointer;
+        margin-top: 20px;
+        transition: all 0.2s;
+    }
+
+    .victory-card button:hover {
+        background: var(--active-btn);
+    }
+
+    @keyframes scaleIn {
+        0% { transform: scale(0); }
+        100% { transform: scale(1); }
+    }
+
+    .footer h4 {
+        color: var(--text);
+        text-align: center;
+    }
+
+    .footer h4 a {
+        color: var(--active-btn);
+        text-decoration: none;
+    }
+        .stats-bar {
+            /* 去掉背景底色：删除 background 属性 */
+            padding: 10px 0; /* 保留上下内边距，去掉左右内边距 */
+            font-size: 14px;
+            color: #333;
+            line-height: 20px;
+            text-align: center; /* 关键：让内容水平居中 */
+            width: 100%; /* 确保容器占满宽度，居中效果更稳定 */
+        }
+
+</style>
+</head>
+<body>
+<div class="game-container">
+    <div class="header">
+        <h1 class="title">爱乐英语-单词趣味消消乐 七年级上册Unit 1</h1>
+        <h2 class="body">Mr.Luo提醒您！挑战自己，从单词背诵开始！<a href="https://alyy.ct.ws" title="爱乐英语单词学习-Alyy Word study  https://alyy.ct.ws-Jewen Studio!"  target="_blank">https://alyy.ct.ws</a> </h2>
+        <div id="timer">时间: 0秒</div>
+        <div id="score">成功: 0次 错误: 0次</div>
+    </div>
+
+    <div class="controls">
+        <button class="difficulty-btn" data-difficulty="4">青铜</button>
+        <button class="difficulty-btn" data-difficulty="6">钻石</button>
+        <button class="difficulty-btn" data-difficulty="10">王者</button>
+    </div>
+
+    <div class="game-columns">
+        <div class="column" id="english-column"></div>
+        <div class="column" id="chinese-column"></div>
+    </div>
+
+    <div class="footer">
+<h4 class="footer">版权所有：爱乐英语-杰文工作室 Designed by Jewen Studio <a href="https://alyy.ct.ws" title="爱乐英语单词学习-Alyy Word study  https://alyy.ct.ws-Jewen Studio!"  target="_blank">https://alyy.ct.ws</a> @2026.1.1</h4>  
+<h3>     <div class="stats-bar" id="stats-container">
+        <!-- 统计内容会在这里加载 -->
+    </div>
+
+    <script>
+        // 异步加载统计内容
+        window.onload = function() {
+            fetch('tongji.php')
+                .then(res => res.text())
+                .then(data => {
+                    document.getElementById('stats-container').innerHTML = data;
+                })
+                .catch(err => {
+                    document.getElementById('stats-container').innerText = "统计加载失败";
+                });
+        };
+    </script></h3>        
+    </div>
+
+</div>
+
+<script>
+        // ========== 防复制增强脚本 ==========
+        // 禁用右键菜单
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+        });
+        
+        // 禁用文本选择
+        document.addEventListener('selectstart', function(e) {
+            // 只允许输入框选择文本
+            if (e.target.tagName !== 'INPUT') {
+                e.preventDefault();
+            }
+        });
+        
+        // 禁用拖拽
+        document.addEventListener('dragstart', function(e) {
+            e.preventDefault();
+        });
+        
+        // 禁用复制粘贴剪切
+        document.addEventListener('copy', function(e) {
+            e.preventDefault();
+        });
+        document.addEventListener('cut', function(e) {
+            e.preventDefault();
+        });
+        document.addEventListener('paste', function(e) {
+            // 只允许输入框粘贴
+            if (e.target.tagName !== 'INPUT') {
+                e.preventDefault();
+            }
+        });
+        
+        // 禁用常用快捷键
+        document.addEventListener('keydown', function(e) {
+            // 禁用 Ctrl+C, Ctrl+V, Ctrl+X, Ctrl+U, Ctrl+S, F12
+            if (
+                (e.ctrlKey && (e.key === 'c' || e.key === 'v' || e.key === 'x' || e.key === 'u' || e.key === 's')) ||
+                e.key === 'F12' ||
+                (e.ctrlKey && e.shiftKey && e.key === 'i') // 禁用Ctrl+Shift+I
+            ) {
+                e.preventDefault();
+                e.stopPropagation();
+                return false;
+            }
+        });
+
+
+// 词汇数据配置
+const vocabulary = [
+{word: "let", translation: "v. 让；允许", type: " "},
+{word: "be", translation: "v. 成为；是；在；等于", type: " "},
+{word: "friend", translation: "n. 朋友", type: " "},
+{word: "hello", translation: "excl. 你好，喂", type: " "},
+{word: "nice", translation: "adj. 令人愉快的；友好的", type: " "},
+{word: "to", translation: "inf. m.（表示想做的事）；（表示目的或意图）；（表示结果或原因）prep. 向；到", type: " "},
+{word: "meet", translation: "v. 结识；遇见", type: " "},
+{word: "you", translation: "pron. 你；你们", type: " "},
+{word: "too", translation: "adv. 也；太；非常", type: " "},
+{word: "good", translation: "adj. 令人愉快的；好的；擅长的；对…… 有好处；完全的", type: " "},
+{word: "morning", translation: "n. 上午", type: " "},
+{word: "I", translation: "pron. 我", type: " "},
+{word: "fine", translation: "adj. 身体好的，健康的；很好 v. 对…… 处以罚款 n. 罚款", type: " "},
+{word: "how", translation: "adv. 怎样；多少，多么", type: " "},
+{word: "do", translation: "aux.（用于实义动词前构成否定句和疑问句）v. 做；从事（职业）；进行（活动）", type: " "},
+{word: "like", translation: "v. 喜欢；想要 prep. 像；…… 怎么样；像…… 一样", type: " "},
+{word: "science", translation: "n. 科学", type: " "},
+{word: "my", translation: "det. 我的", type: " "},
+{word: "name", translation: "n. 名字 v. 给…… 取名", type: " "},
+{word: "read", translation: "v. 阅读；朗读；读到", type: " "},
+{word: "love", translation: "v., n. 喜爱；爱", type: " "},
+{word: "hike", translation: "v. 远足；徒步旅行", type: " "},
+{word: "enjoy", translation: "v. 享受…… 的乐趣；喜爱；欣赏", type: " "},
+{word: "play", translation: "v. 参加比赛；玩耍；演奏 n. 戏剧", type: " "},
+{word: "football", translation: "n. 足球运动；足球", type: " "},
+{word: "sing", translation: "v. 唱（歌）", type: " "},
+{word: "Miss", translation: "n. 小姐；女士", type: " "},
+{word: "what", translation: "pron., det. 什么；无论什么；多么", type: " "},
+{word: "your", translation: "det. 你的；你们的", type: " "},
+{word: "please", translation: "excl. 请；太好了", type: " "},
+{word: "dance", translation: "v. 跳舞", type: " "},
+{word: "eleven", translation: "num. 十一", type: " "},
+{word: "twelve", translation: "num. 十二", type: " "},
+{word: "thirteen", translation: "num. 十三", type: " "},
+{word: "fourteen", translation: "num. 十四", type: " "},
+{word: "fifteen", translation: "num. 十五", type: " "},
+{word: "sixteen", translation: "num. 十六", type: " "},
+{word: "seventeen", translation: "num. 十七", type: " "},
+{word: "eighteen", translation: "num. 十八", type: " "},
+{word: "nineteen", translation: "num. 十九", type: " "},
+{word: "twenty", translation: "num. 二十", type: " "},
+{word: "hi", translation: "excl. 你好，嗨", type: " "},
+{word: "this", translation: "pron., det. 这，这个", type: " "},
+{word: "where", translation: "adv. 在哪里", type: " "},
+{word: "from", translation: "prep. 来自；离；始于；从", type: " "},
+{word: "and", translation: "conj. 和；然后", type: " "},
+{word: "in", translation: "prep. 在…… 中；用；穿着", type: " "},
+{word: "class", translation: "n. 班级；课；阶层", type: " "},
+{word: "grade", translation: "n. 年级；成绩等级", type: " "},
+{word: "which", translation: "pron., det. 哪一个，哪一些", type: " "},
+{word: "we", translation: "pron. 我们；人们", type: " "},
+{word: "classmate", translation: "n. 同班同学", type: " "},
+{word: "old", translation: "adj. 年纪；结识久的；老的", type: " "},
+{word: "year", translation: "n. 年龄；年；一年时间", type: " "},
+{word: "see", translation: "v. 看见；理解；看", type: " "},
+{word: "tall", translation: "adj. 高的；身高", type: " "},
+{word: "friendly", translation: "adj. 友好的；亲切的", type: " "},
+{word: "three", translation: "num. 三", type: " "},
+{word: "seven", translation: "num. 七", type: " "},
+{word: "kind", translation: "adj. 友好的 n. 种类", type: " "},
+{word: "draw", translation: "v. 画，描绘", type: " "},
+{word: "short", translation: "adj. 个子矮的；短暂的；短的", type: " "},
+{word: "strong", translation: "adj. 强壮的", type: " "},
+{word: "thin", translation: "adj. 瘦的；薄的", type: " "},
+{word: "run", translation: "v. 跑步；跑", type: " "},
+{word: "cook", translation: "v. 烹饪，烹调 n. 厨师", type: " "},
+{word: "helpful", translation: "adj. 愿意帮忙的；有帮助的", type: " "},
+{word: "quiet", translation: "adj. 文静的；安静的", type: " "},
+{word: "all", translation: "det., pron. 所有，全部", type: " "},
+{word: "need", translation: "v. 需要；有必要 modal v., n. 需要", type: " "},
+{word: "can", translation: "modal v. 可以；能，会", type: " "},
+{word: "young", translation: "adj. 年轻的；幼小的；青年的", type: " "},
+{word: "together", translation: "adv. 在一起；共同", type: " "},
+{word: "help", translation: "v., n. 帮助", type: " "},
+{word: "each", translation: "pron., det. 各个，每个", type: " "},
+{word: "other", translation: "pron., adj. 另外；另一个", type: " "},
+{word: "he", translation: "pron. 他", type: " "},
+{word: "often", translation: "adv. 时常；往往", type: " "},
+{word: "who", translation: "pron. 谁", type: " "},
+{word: "best", translation: "adj. 最好的 adv. 最 n. 最好的事物（或人）；最高标准", type: " "},
+{word: "she", translation: "pron. 她", type: " "},
+{word: "six", translation: "num. 六", type: " "},
+{word: "here", translation: "adv.（给某人东西或指出某物时说）；在这里", type: " "},
+{word: "cute", translation: "adj. 可爱的；漂亮迷人的", type: " "},
+{word: "the", translation: "art.（用以泛指）；（解说时用）", type: " "},
+{word: "guitar", translation: "n. 吉他", type: " "},
+{word: "new", translation: "adj. 初来乍到的；不熟悉的；新的；有别于从前的", type: " "},
+{word: "very", translation: "adv. 很，非常", type: " "},
+{word: "happy", translation: "adj. 高兴的；幸福的；（表示祝愿）；乐意（做某事）", type: " "},
+{word: "at", translation: "prep. 在（某处）；在（某时间）；在（表示学习或工作地点）；在…… 方面；向", type: " "},
+{word: "school", translation: "n. 学校；上学；上课时间", type: " "},
+{word: "music", translation: "n. 音乐；音乐创作", type: " "},
+{word: "have", translation: "v. 有；吃；经历", type: " "},
+{word: "they", translation: "pron. 他们；她们；它们", type: " "},
+{word: "it", translation: "pron. 它", type: " "},
+{word: "a", translation: "art. 一（人、事、物）；（表示为某一群体或职业中的一员）；任何一，每一", type: " "},
+{word: "dog", translation: "n. 狗", type: " "},
+{word: "two", translation: "num. 二", type: " "},
+{word: "big", translation: "adj. 大的；年纪较长的；大受欢迎的", type: " "},
+{word: "ear", translation: "n. 耳；耳朵", type: " "},
+{word: "cat", translation: "n. 猫", type: " "},
+{word: "little", translation: "adj. 小的；年幼的；可怜的 det., pron. 不多的；少量的", type: " "},
+{word: "black", translation: "adj. 黑色的 n. 黑色", type: " "},
+{word: "one", translation: "num. 一；一个 pron. 其中的一个人（或事物）", type: " "},
+{word: "listen", translation: "v. 听", type: " "},
+{word: "lovely", translation: "adj. 美丽的；迷人的", type: " "},
+{word: "brother", translation: "n. 哥哥；弟弟", type: " "},
+{word: "yes", translation: "excl.（答话时表示正确或真实）；（表示同意所说的话）；（接受提议或邀请）", type: " "},
+{word: "that", translation: "det., pron. 那，那个", type: " "},
+{word: "boy", translation: "n. 男孩", type: " "},
+{word: "our", translation: "det. 我们的", type: " "},
+{word: "no", translation: "adv. 不；没有；不是 det. 没有；不准", type: " "},
+{word: "not", translation: "adv. 不，没有", type: " "},
+{word: "yourself", translation: "pron. 你自己", type: " "},
+{word: "age", translation: "n. 年龄；时代", type: " "},
+{word: "swim", translation: "v. 游泳；游动", type: " "},
+{word: "girl", translation: "n. 女孩", type: " "},
+{word: "everyone", translation: "pron. 每人；人人；所有人", type: " "},
+{word: "her", translation: "det. 她的 pron. 她", type: " "},
+{word: "beautiful", translation: "adj. 美丽的；美好的", type: " "},
+{word: "picture", translation: "n. 图画；照片 v. 想象", type: " "},
+{word: "book", translation: "n. 书 v. 预约，预订", type: " "},
+{word: "also", translation: "adv. 也；而且", type: " "},
+{word: "many", translation: "det., pron. 许多", type: " "},
+{word: "thing", translation: "n. 事件；东西", type: " "},
+{word: "such", translation: "det., pron. 这样；这样的，那样的", type: " "},
+{word: "as", translation: "prep. 像；作为 adv. 如同", type: " "},
+{word: "great", translation: "adj.（强调某种情况）；好极的；优秀的", type: " "},
+{word: "time", translation: "n. 时间；一段时间；次；时刻", type: " "},
+{word: "with", translation: "prep. 和；有；用", type: " "},
+{word: "know", translation: "v. 知道；认识", type: " "},
+{word: "card", translation: "n. 卡片纸；贺卡", type: " "},
+{word: "talk", translation: "v. 说话；讨论", type: " "},
+{word: "much", translation: "adv. 非常；十分；很 det., pron. 许多，大量", type: " "},
+{word: "but", translation: "conj. 相反；然而", type: " "},
+{word: "really", translation: "adv.（加强形容词或副词的语气）；确实；真正地", type: " "},
+{word: "different", translation: "adj. 不同的；各种的", type: " "},
+{word: "Mr", translation: "abbr. 先生", type: " "},
+{word: "four", translation: "num. 四", type: " "}
+];
+
+// 游戏核心逻辑
+let selectedCards = [];
+let successCount = 0;
+let errorCount = 0;
+let totalPairs = 0;
+let startTime = 0;
+let timerInterval;
+
+function initGame(pairCount) {
+    // 重置游戏状态
+    clearInterval(timerInterval);
+    selectedCards = [];
+    successCount = 0;
+    errorCount = 0;
+    totalPairs = pairCount;
+    startTime = Date.now();
+    
+    // 随机选择指定数量的词汇对
+    const selected = shuffle([...vocabulary]).slice(0, pairCount);
+    const pairs = selected.flatMap(item => [
+        {text: `${item.word} ${item.type}`, value: item.word, type: 'en'},
+        {text: item.translation, value: item.word, type: 'cn'}
+    ]);
+    
+    // 生成卡片
+    const shuffledCards = shuffle(pairs);
+    document.getElementById('english-column').innerHTML = 
+        shuffledCards.filter(c => c.type === 'en').map(cardHTML).join('');
+    document.getElementById('chinese-column').innerHTML = 
+        shuffledCards.filter(c => c.type === 'cn').map(cardHTML).join('');
+    
+    // 更新界面
+    updateScore();
+    timerInterval = setInterval(updateTimer, 1000);
+}
+
+function cardHTML(card) {
+    return `<div class="card" data-value="${card.value}" data-type="${card.type}">${card.text}</div>`;
+}
+
+function handleCardClick(card) {
+    if (card.classList.contains('matched')) return;
+    
+    // 播放单词发音（使用有道发音服务）
+    const word = card.dataset.value;
+    const audio = new Audio(`https://dict.youdao.com/dictvoice?audio=${encodeURIComponent(word)}`);
+    audio.play().catch(() => console.log('自动播放被阻止'));
+
+    // 选择逻辑
+    card.classList.add('selected');
+    selectedCards.push(card);
+
+    if (selectedCards.length === 2) {
+        setTimeout(checkMatch, 500);
+    }
+}
+
+function checkMatch() {
+    const [first, second] = selectedCards;
+    const isMatch = first.dataset.value === second.dataset.value;
+
+    if (isMatch) {
+        successCount++;
+        selectedCards.forEach(c => c.classList.add('matched'));
+        if (successCount === totalPairs) showVictory();
+    } else {
+        errorCount++;
+        selectedCards.forEach(c => c.classList.remove('selected'));
+    }
+
+    selectedCards = [];
+    updateScore();
+}
+
+function updateScore() {
+    document.getElementById('score').textContent = 
+        `成功: ${successCount}次 错误: ${errorCount}次`;
+}
+
+function updateTimer() {
+    const seconds = Math.floor((Date.now() - startTime) / 1000);
+    document.getElementById('timer').textContent = `时间: ${seconds}秒`;
+}
+
+function showVictory() {
+    clearInterval(timerInterval);
+    const overlay = document.createElement('div');
+    overlay.className = 'victory-overlay';
+    overlay.innerHTML = `
+        <div class="victory-card">
+            <h3>🎉 jewen提醒您，恭喜闯关成功！</h3>
+            <p>用时：${Math.floor((Date.now() - startTime)/1000)}秒</p>
+            <p>正确率：${Math.round(successCount/(successCount+errorCount)*100)}%</p>
+            <button onclick="location.reload()">再来一次</button>
+        </div>
+    `;
+    document.body.appendChild(overlay);
+}
+
+// 工具函数
+function shuffle(array) {
+    return array.sort(() => Math.random() - 0.5);
+}
+
+// 事件监听
+document.querySelectorAll('.difficulty-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        document.querySelectorAll('.difficulty-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        initGame(parseInt(btn.dataset.difficulty));
+    });
+});
+
+document.querySelector('.game-columns').addEventListener('click', (e) => {
+    if (e.target.classList.contains('card')) {
+        handleCardClick(e.target);
+    }
+});
+
+// 默认开始青铜难度
+document.querySelector('[data-difficulty="4"]').click();
+</script>
+</body>
+</html>
